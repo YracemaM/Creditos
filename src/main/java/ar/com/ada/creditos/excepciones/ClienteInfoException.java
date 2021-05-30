@@ -9,9 +9,24 @@ public class ClienteInfoException extends Exception {
 
     private Cliente cliente;
 
+    
     public ClienteInfoException(Cliente cliente, String mensaje) {
 
-        super(cliente.getNombre() + ":" + mensaje);
+        super(cliente.getNombre () + ":" + mensaje);
+            this.cliente = cliente;
+        }
+
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+
+    public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
+
 }
+
+    
+
