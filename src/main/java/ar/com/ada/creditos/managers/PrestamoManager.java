@@ -14,7 +14,6 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import ar.com.ada.creditos.entities.*;
 
 public class PrestamoManager {
-    
     protected SessionFactory sessionFactory;
 
     public void setup() {
@@ -44,7 +43,6 @@ public class PrestamoManager {
 
         session.save(prestamo);
 
-
         session.getTransaction().commit();
         session.close();
     }
@@ -59,46 +57,7 @@ public class PrestamoManager {
         return prestamo;
     }
 
-    public Prestamo readByDNI(int dni) {
-        Session session = sessionFactory.openSession();
-
-        Prestamo prestamo = session.byNaturalId(Prestamo.class).using("dni", dni).load();
-
-        session.close();
-
-        return prestamo;
-    }
-
-    public void update(Prestamo prestamo) {
-
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-
-        session.update(prestamo); //revisar esto en caso de no correr
-
-        session.getTransaction().commit();
-        session.close();
-    }
-
-    public void delete(Prestamo prestamo) {
-
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-
-        session.delete(prestamo);
-
-        session.getTransaction().commit();
-        session.close();
-    }
-
-    /**
-     * Este metodo en la vida real no debe existir ya qeu puede haber miles de
-     * usuarios
-     * 
-     * @return
-     */
-    public List<Prestamo> buscarTodos() {
-
+    public List<Prestamo> mostrarTodos() {
         Session session = sessionFactory.openSession();
 
         /// NUNCA HARCODEAR SQLs nativos en la aplicacion.
@@ -110,31 +69,4 @@ public class PrestamoManager {
         return todos;
 
     }
-
-    /**
-     * Busca una lista de clientes por el nombre completo Esta armado para que se
-     * pueda generar un SQL Injection y mostrar commo NO debe programarse.
-     * 
-     * @param nombre
-     * @return
-     */
-    public List<Prestamo> buscarPor(String nombre) {
-
-        Session session = sessionFactory.openSession();
-
-        // SQL Injection vulnerability exposed.
-        // Deberia traer solo aquella del nombre y con esto demostrarmos que trae todas
-        // si pasamos
-        // como nombre: "' or '1'='1"
-        Query query = session.createNativeQuery("SELECT * FROM prestamo where nombre = '" + nombre + "'", Prestamo.class);
-
-        List<Prestamo> prestamo = query.getResultList();
-
-        return prestamo;
-
-    }
-
-
 }
-
-
