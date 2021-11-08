@@ -15,18 +15,4 @@ public class ClienteInfoException extends Exception {
         super(cliente.getNombre () + ":" + mensaje);
             this.cliente = cliente;
         }
-
-
-    public Cliente getCliente() {
-        return cliente;
     }
-
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-}
-
-    
-

@@ -3,29 +3,33 @@ package ar.com.ada.creditos.entities;
 import java.util.*;
 import java.math.*;
 import javax.persistence.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 
 @Entity
-@Table(name = "prestamos")
+@Table(name = "prestamo")
 public class Prestamo {
     @Id
     @Column(name = "prestamo_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // AUTOINCREMENTAL
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int prestamoId;
 
-    @Column(name = "estado_id")
-    private int estadoId; //Por ahora vamos a crear este como Int
-
-    private BigDecimal Importe;
-
-    private int Cuotas;
-
-    @Temporal(TemporalType.DATE) // SOLO Poner esto si no queremos manejar HORA en el DB Server.
+    @Temporal(TemporalType.DATE)
     private Date fecha;
 
-    @Column(name = "Fecha_Alta")
+    private BigDecimal importe;
+
+    private int cuotas;
+
+    @Column(name = "fecha_alta")
     private Date fechaAlta;
 
-    @ManyToOne // Los joinsColumns van donde llega la ForeingKey
+    @Column(name = "estado_id")
+    private int estadoId; // Por ahora vamos a crear este como int
+
+
+    @ManyToOne //join columns van donde esta FK
     @JoinColumn(name = "cliente_id", referencedColumnName = "cliente_id")
     private Cliente cliente;
 
@@ -37,22 +41,6 @@ public class Prestamo {
         this.prestamoId = prestamoId;
     }
 
-    public BigDecimal getImporte() {
-        return Importe;
-    }
-
-    public void setImporte(BigDecimal importe) {
-        this.Importe = importe;
-    }
-
-    public int getCuotas() {
-        return Cuotas;
-    }
-
-    public void setCuotas(int cuotas) {
-        Cuotas = cuotas;
-    }
-
     public Date getFecha() {
         return fecha;
     }
@@ -61,12 +49,28 @@ public class Prestamo {
         this.fecha = fecha;
     }
 
+    public BigDecimal getImporte() {
+        return importe;
+    }
+
+    public void setImporte(BigDecimal importe) {
+        this.importe = importe;
+    }
+
+    public int getCuotas() {
+        return cuotas;
+    }
+
+    public void setCuotas(int cuotas) {
+        this.cuotas = cuotas;
+    }
+
     public Date getFechaAlta() {
         return fechaAlta;
     }
 
-    public void setFechaAlta(Date fechaalta) {
-        fechaAlta = fechaalta;
+    public void setFechaAlta(Date fechaAlta) {
+        this.fechaAlta = fechaAlta;
     }
 
     public Cliente getCliente() {
@@ -75,22 +79,22 @@ public class Prestamo {
 
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
-        this.cliente.agregarPrestamo(this); // RELACION BIDIRECCIONAL
+        this.cliente.agregarPrestamo(this);//relacion bidireccional.
     }
 
-    // ENUMERADO
-    
-    public EstadoPrestamoEnum getEstadoId() {
-        
-        return EstadoPrestamoEnum.parse(this.estadoId);
-    }
-    
-    public void setEstadoId(EstadoPrestamoEnum estadoId) {
-        this.estadoId = estadoId.getValue();
-    }
-// enumerado
+//ENUMERADO
+
+public EstadoPrestamoEnum getEstadoId() {
+
+    return EstadoPrestamoEnum.parse(this.estadoId);
+}
+
+public void setEstadoId(EstadoPrestamoEnum estadoId) {
+    this.estadoId = estadoId.getValue();
+}
+//enumerado
 public enum EstadoPrestamoEnum {
-    SOLICITADO(1),
+    SOLICITADO(1), 
     RECHAZADO(2),
     PENDIENTE_APROBACION(3),
     APROBADO(4),
@@ -100,27 +104,28 @@ public enum EstadoPrestamoEnum {
 
     private final int value;
 
-//NOTE: Enum constructor tiene que estar en privado
-    private EstadoPrestamoEnum (int value) {
+    // NOTE: Enum constructor tiene que estar en privado
+    private EstadoPrestamoEnum(int value) {
         this.value = value;
     }
-    
+
     public int getValue() {
         return value;
-
     }
-        public static EstadoPrestamoEnum parse(int id) {
-            EstadoPrestamoEnum status = null; //Default
-            for (EstadoPrestamoEnum item : EstadoPrestamoEnum.values()) {
-                if (item.getValue() == id) {
-                    status = item;
-                    break;
-                }
+
+    public static EstadoPrestamoEnum parse(int id) {
+        EstadoPrestamoEnum status = null; // Default
+        for (EstadoPrestamoEnum item : EstadoPrestamoEnum.values()) {
+            if (item.getValue() == id) {
+                status = item;
+                break;
             }
-            return status;
         }
-   
+        return status;
     }
 }
+
+}
+
 
 

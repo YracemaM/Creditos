@@ -9,15 +9,7 @@ public class ClienteNombreException extends ClienteInfoException {
     public ClienteNombreException(Cliente cliente, String mensaje) {
         super(cliente, mensaje);
         this.Cliente = cliente;
-    }
-
-    public Cliente getCliente() {
-        return Cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        Cliente = cliente;
-    }
-    
+        // TODO Auto-generated constructor stub
+    } 
 
 }

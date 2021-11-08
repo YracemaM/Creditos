@@ -1,12 +1,27 @@
 package ar.com.ada.creditos.entities;
 
-import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.NaturalId;
 
-import ar.com.ada.creditos.excepciones.*;
-
-import java.util.*;
+import ar.com.ada.creditos.excepciones.ClienteDNIException;
+import ar.com.ada.creditos.excepciones.ClienteNombreException;
 
 @Entity
 @Table(name = "cliente")
@@ -26,13 +41,14 @@ public class Cliente {
     @Column(name = "direccion_alternativa")
     private String direccionAlternativa;
 
-    @Column(name="fecha_nacimiento")
+    @Column(name = "fecha_nacimiento")
     @Temporal(TemporalType.DATE) //SOLO Poner esto si no queremos manejar HORA en el DB Server.
     private Date fechaNacimiento;
-    
-    @OneToMany (mappedBy = "cliente", cascade = CascadeType.ALL) //, fetch = FetchType.EAGER) de uno a muchos: cada prestamo va a tener un solo cliente y viceversa
-    private List<Prestamo> prestamo = new ArrayList<>();
-    
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @LazyCollection(LazyCollectionOption.FALSE) //de uno a muchos
+    private List<Prestamo> prestamos = new ArrayList<>();
+
     public Cliente(String nombre) {
         this.nombre = nombre;
 
@@ -53,8 +69,14 @@ public class Cliente {
         return nombre;
     }
 
-    public void setNombre(String nombre){
+    
+    public void setNombre(String nombre) throws ClienteNombreException{
+        if(nombre.isEmpty()){
+            throw new ClienteNombreException(this, "Indique un nombre");
+        }
         this.nombre = nombre;
+    
+
     }
 
     public void setDni(int dni) throws ClienteDNIException {
@@ -73,7 +95,7 @@ public class Cliente {
 
     @Override
     public String toString() {
-        return "Cliente [id="+ clienteId +", dni=" + dni + ", nombre=" + nombre + "]";
+        return "Cliente [id=" + clienteId + ", dni=" + dni + ", nombre=" + nombre + "]";
     }
 
     public String getDireccion() {
@@ -99,24 +121,16 @@ public class Cliente {
     public void setFechaNacimiento(Date fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
-   
-    public List<Prestamo> getPrestamo() {
-        return prestamo;
-    }
-    
-    public void setPrestamo(List<Prestamo> prestamo) {
-        this.prestamo = prestamo;
+
+    public List<Prestamo> getPrestamos() {
+        return prestamos;
     }
 
-    public void agregarPrestamo(Prestamo prestamo){
-        this.prestamo.add(prestamo);
+    public void setPrestamos(List<Prestamo> prestamos) {
+        this.prestamos = prestamos;
+    }
+
+    public void agregarPrestamo(Prestamo prestamo) {
+        this.prestamos.add(prestamo);
     }
 }
-    
- 
-
-    
-
-
-
-
